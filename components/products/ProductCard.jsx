@@ -4,24 +4,28 @@ import styles from "./ProductCard.style";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
-const ProductCard = () => {
+const ProductCard = ({ product }) => {
   const slides = [
-    require("../../assets/images/fn1.jpg"),
-    require("../../assets/images/fn2.jpg"),
-    require("../../assets/images/fn3.jpg"),
+    // require(props.product.imageUrl),
+    // require("../../assets/images/fn2.jpg"),
+    // require("../../assets/images/fn3.jpg"),
   ];
 
   const navigation = useNavigation();
+  // console.log(typeof product.imageUrl);
+  // const image = product.imageUrl;
+  // console.log(image);
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("ProductDetails");
+        navigation.navigate("ProductDetails", { product });
       }}
     >
       <View style={styles.container}>
         <View style={styles.imgContainer}>
           <Image
             source={require("../../assets/images/fn4.jpg")}
+            // source={image}
             style={styles.image}
             // width={170}
             // height={}
@@ -30,13 +34,13 @@ const ProductCard = () => {
 
         <View style={styles.details}>
           <Text style={styles.title} numberOfLines={1}>
-            Product
+            {product.title}
           </Text>
           <Text style={styles.supplier} numberOfLines={1}>
-            Supplier
+            {product.supplier}
           </Text>
           <Text style={styles.price} numberOfLines={1}>
-            $123
+            {product.price}
           </Text>
         </View>
 

@@ -36,6 +36,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.primary,
   },
+  resultContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyResult: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+    // width: 200,
+    marginTop: 300,
+    flex: 1,
+    // overflow: "hidden",
+  },
+  emptyImg: {
+    width: 200,
+    resizeMode: "contain",
+    alignSelf: "center",
+  },
 });
 
 export default styles;
