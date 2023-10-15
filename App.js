@@ -6,8 +6,18 @@ import { useCallback } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
-import { ProductDetails, Login, Orders, Favorites, Cart } from "./screens";
+import {
+  ProductDetails,
+  Login,
+  Orders,
+  Favorites,
+  Cart,
+  Register,
+} from "./screens";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
+const STRIPE_KEY =
+  "pk_test_51O1UzOSJGdeU3lE0IEQyk7B7QxI0pvpnaPDJTbld8GR4mDgD2pXqeyOOF9C5w9yWhpxqdxJYi8ZQTwNUl5roKf7E00JyCv6i0W";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -31,40 +41,47 @@ export default function App() {
   }
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Bottom Navigation"
-            component={BottomTabNavigation}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="ProductDetails"
-            component={ProductDetails}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Orders"
-            component={Orders}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Cart"
-            component={Cart}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Favorites"
-            component={Favorites}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <StripeProvider publishableKey={STRIPE_KEY}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Bottom Navigation"
+              component={BottomTabNavigation}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ProductDetails"
+              component={ProductDetails}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Orders"
+              component={Orders}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Cart"
+              component={Cart}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Favorites"
+              component={Favorites}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={Register}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </StripeProvider>
     </SafeAreaProvider>
   );
 }

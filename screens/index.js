@@ -6,7 +6,9 @@ import ProductDetails from "./ProductDetails";
 import Login from "./Login";
 import Orders from "./Orders";
 import Favorites from "./Favorites";
+import Register from "./Register";
 export {
+  Register,
   Home,
   Profile,
   Search,

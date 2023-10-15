@@ -1,5 +1,12 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
-import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Alert,
+} from "react-native";
+import React, { useState, useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./ProductDetails.style";
@@ -10,9 +17,228 @@ import {
   SimpleLineIcons,
 } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import Toast from "react-native-toast-message";
 
 const ProductDetails = ({ navigation }) => {
+  const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
+
   const [count, setCount] = useState(1);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteId, setFavoriteId] = useState();
+  const [currentUser, setCurrentUser] = useState(null);
+  const [addedToBag, setAddedToBag] = useState(false);
+  // const [userLogin, setUserLogin] = useState(false);
+
+  useEffect(() => {
+    checkIsFavorite();
+  }, []);
+  const route = useRoute();
+  const { product } = route.params;
+  // console.log(product);
+
+  const getAllFavorites = async (userId) => {
+    try {
+      const endpoint = `${baseUrl}/api/favorite/${JSON.parse(userId)}`;
+      const response = await axios.get(endpoint);
+      if (response.status === 200) {
+        const products = response.data.products;
+        console.log(products);
+        // setFavorites(products)
+        let flag = false;
+        products.forEach((item) => {
+          if (item.favoriteItem._id === product._id) {
+            // setIsFavorite(true)
+            flag = true;
+            setFavoriteId(item._id);
+          }
+        });
+        if (flag) {
+          setIsFavorite(true);
+        } else {
+          setIsFavorite(false);
+        }
+      } else {
+        Alert.alert("Error Getting favorites", "Check the logs", [
+          {
+            text: "okay",
+            onPress: () => console.log("okay"),
+          },
+
+          // { defaultIndex: 0 },
+        ]);
+      }
+    } catch (error) {
+      Alert.alert("Error Getting favorites", `${error}`, [
+        {
+          text: "okay",
+          onPress: () => console.log("okay"),
+        },
+
+        // { defaultIndex: 0 },
+      ]);
+    }
+  };
+
+  const checkIsFavorite = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      const currentUser = await AsyncStorage.getItem(userId);
+
+      if (currentUser !== null) {
+        const parsedData = JSON.parse(currentUser);
+        getAllFavorites(id);
+      }
+    } catch (error) {
+      console.log("Error retrieving user");
+    }
+  };
+
+  const checkExistingUser = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      const currentUser = await AsyncStorage.getItem(userId);
+
+      if (currentUser !== null) {
+        const parsedData = JSON.parse(currentUser);
+        if (isFavorite) {
+          removeFavorites(id);
+        } else {
+          addToFavorites(id);
+        }
+      } else {
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      console.log("Error retrieving user");
+    }
+  };
+
+  const addToFavorites = async (userId) => {
+    console.log(userId);
+    try {
+      const endpoint = `${baseUrl}/api/favorite/add`;
+      const data = {
+        userId: JSON.parse(userId),
+        favoriteItem: product._id,
+      };
+      let data1 = {
+        userId: JSON.parse(userId),
+        favoriteItem: `${product._id}`,
+      };
+      console.log(data);
+
+      const response = await axios.post(endpoint, data1);
+      if (response.status === 200) {
+        setIsFavorite(true);
+        console.log(response.data);
+      } else {
+        Alert.alert("Error Adding to favorites", "Check the logs", [
+          {
+            text: "okay",
+            onPress: () => console.log("okay"),
+          },
+
+          // { defaultIndex: 0 },
+        ]);
+      }
+    } catch (error) {
+      Alert.alert("Error Adding to favorites", `${error}`, [
+        {
+          text: "okay",
+          onPress: () => console.log("okay"),
+        },
+
+        // { defaultIndex: 0 },
+      ]);
+    }
+  };
+
+  const removeFavorites = async (userId) => {
+    try {
+      const endpoint = `${baseUrl}/api/favorite/remove/${favoriteId}`;
+      const response = await axios.delete(endpoint);
+      if (response.status === 200) {
+        setIsFavorite(false);
+        console.log(response.data);
+      } else {
+        Alert.alert("Error Removing favorites", "Check the logs", [
+          {
+            text: "okay",
+            onPress: () => console.log("okay"),
+          },
+
+          // { defaultIndex: 0 },
+        ]);
+      }
+    } catch (error) {
+      Alert.alert("Error Removing favorites", `${error}`, [
+        {
+          text: "okay",
+          onPress: () => console.log("okay"),
+        },
+
+        // { defaultIndex: 0 },
+      ]);
+    }
+  };
+
+  const addToCart = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      const currentUser = await AsyncStorage.getItem(userId);
+
+      if (currentUser !== null) {
+        try {
+          const endpoint = `${baseUrl}/api/cart`;
+          const data = {
+            userId: JSON.parse(id),
+            quantity: 1,
+            cartItem: `${product._id}`,
+          };
+          const response = await axios.post(endpoint, data);
+          if (response.status === 200) {
+            setAddedToBag(true);
+            Alert.alert("Success", "Product addded to bag", [
+              {
+                text: "okay",
+                onPress: () => console.log("okay"),
+              },
+
+              // { defaultIndex: 0 },
+            ]);
+          } else {
+            Alert.alert("Error Getting favorites", "Check the logs", [
+              {
+                text: "okay",
+                onPress: () => console.log("okay"),
+              },
+
+              // { defaultIndex: 0 },
+            ]);
+          }
+        } catch (error) {
+          Alert.alert("Error Getting favorites", `${error}`, [
+            {
+              text: "okay",
+              onPress: () => console.log("okay"),
+            },
+
+            // { defaultIndex: 0 },
+          ]);
+        }
+      }
+    } catch (error) {
+      console.log("Error retrieving user");
+    }
+  };
 
   const increment = () => {
     setCount(count + 1);
@@ -20,10 +246,14 @@ const ProductDetails = ({ navigation }) => {
   const decrement = () => {
     if (count > 1) setCount(count - 1);
   };
+  const showToast = () => {
+    Toast.show({
+      type: "success",
+      text1: "Hello",
+      text2: "This is some something 👋",
+    });
+  };
 
-  const route = useRoute();
-  const { product } = route.params;
-  console.log(product);
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -35,8 +265,12 @@ const ProductDetails = ({ navigation }) => {
           >
             <Ionicons name="chevron-back-circle" size={30} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}}>
-            <Ionicons name="heart" size={30} color={COLORS.primary} />
+          <TouchableOpacity onPress={() => checkExistingUser()}>
+            <Ionicons
+              name={isFavorite ? "heart" : "heart-outline"}
+              size={30}
+              color={COLORS.primary}
+            />
           </TouchableOpacity>
         </View>
         <Image
@@ -61,7 +295,7 @@ const ProductDetails = ({ navigation }) => {
               <Text style={styles.ratingText}> (4.9)</Text>
             </View>
 
-            <View style={styles.rating}>
+            {/* <View style={styles.rating}>
               <TouchableOpacity onPress={increment}>
                 <SimpleLineIcons name="plus" size={20} />
               </TouchableOpacity>
@@ -69,7 +303,7 @@ const ProductDetails = ({ navigation }) => {
               <TouchableOpacity onPress={decrement}>
                 <SimpleLineIcons name="minus" size={20} />
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
           <View style={styles.descriptionWrapper}>
@@ -98,7 +332,10 @@ const ProductDetails = ({ navigation }) => {
             <TouchableOpacity onPress={() => {}} style={styles.buyBtn}>
               <Text style={styles.cartTitle}>BUY NOW</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}} style={styles.cartBtn}>
+            <TouchableOpacity
+              onPress={() => addToCart()}
+              style={styles.cartBtn}
+            >
               <Fontisto
                 name="shopping-bag"
                 size={20}

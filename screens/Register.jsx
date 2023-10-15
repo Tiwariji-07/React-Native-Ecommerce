@@ -14,20 +14,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { BackButton, Button } from "../components";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { COLORS } from "../constants";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { COLORS, SIZES } from "../constants";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Login = ({ navigation }) => {
+const Register = ({ navigation }) => {
   const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
+
   const [loader, setLoader] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const [input, setInput] = useState({
     email: "",
     password: "",
   });
-
   const [obsecureText, setObsecureText] = useState(true);
 
   const validationSchema = Yup.object().shape({
@@ -35,6 +34,12 @@ const Login = ({ navigation }) => {
       .min(6, "Must be 6 characters or more")
       .required("Required"),
     email: Yup.string().email("Invalid email address").required("Required"),
+    username: Yup.string()
+      .min(3, "Must be at least 3 characters")
+      .required("Required"),
+    location: Yup.string()
+      .min(3, "Must be at least 3 characters")
+      .required("Required"),
   });
 
   const invalidForm = () => {
@@ -51,25 +56,20 @@ const Login = ({ navigation }) => {
     ]);
   };
 
-  const login = async (values) => {
+  const register = async (values) => {
+    // console.log(values);
     setLoader(true);
     try {
-      const endpoint = `${baseUrl}/api/login`;
+      const endpoint = `${baseUrl}/api/register`;
       const data = values;
       const response = await axios.post(endpoint, data);
-      if (response.status === 200) {
+      if (response.status === 201) {
         // console.log(respons e.data);
         setLoader(false);
-        setResponseData(response.data);
-        await AsyncStorage.setItem(
-          `user${responseData._id}`,
-          JSON.stringify(responseData)
-        );
-        await AsyncStorage.setItem(`id`, JSON.stringify(responseData._id));
 
-        navigation.replace("Bottom Navigation");
+        navigation.replace("Login");
       } else {
-        Alert.alert("Error logging in", "Please provide valid credentials", [
+        Alert.alert("Error Registering", `${response.data}`, [
           {
             text: "okay",
             onPress: () => console.log("okay"),
@@ -79,7 +79,7 @@ const Login = ({ navigation }) => {
         ]);
       }
     } catch (error) {
-      Alert.alert("Error logging in", "Please provide valid credentials", [
+      Alert.alert("Error Registering", `${error}`, [
         {
           text: "okay",
           onPress: () => console.log("okay"),
@@ -98,13 +98,23 @@ const Login = ({ navigation }) => {
         <View>
           <BackButton onPress={() => navigation.goBack()} />
           <Image
-            source={require("../assets/images/login-bk1.png")}
-            style={styles.cover}
+            source={require("../assets/images/signup-bk.png")}
+            style={{
+              height: SIZES.height / 3,
+              width: SIZES.width - 60,
+              resizeMode: "contain",
+              marginBottom: SIZES.xxLarge,
+            }}
           />
 
           <Formik
-            initialValues={{ email: "", password: "" }}
-            onSubmit={(values) => login(values)}
+            initialValues={{
+              email: "",
+              password: "",
+              location: "",
+              username: "",
+            }}
+            onSubmit={(values) => register(values)}
             validationSchema={validationSchema}
           >
             {({
@@ -147,6 +157,63 @@ const Login = ({ navigation }) => {
                   )}
                 </View>
                 <View style={styles.wrapper}>
+                  <Text style={styles.label}>Username</Text>
+                  <View
+                    style={styles.inputWrapper(
+                      touched.username ? COLORS.primary : COLORS.offwhite
+                    )}
+                  >
+                    <MaterialCommunityIcons
+                      name="face-man-profile"
+                      size={20}
+                      color={COLORS.primary}
+                      style={styles.iconStyle}
+                    />
+                    <TextInput
+                      placeholder="Enter username"
+                      onFocus={() => setFieldTouched("username")}
+                      onBlur={() => setFieldTouched("username", "")}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      style={{ flex: 1 }}
+                      value={values.username}
+                      onChangeText={handleChange("username")}
+                    />
+                  </View>
+                  {touched.username && errors.username && (
+                    <Text style={styles.errorMessage}>{errors.email}</Text>
+                  )}
+                </View>
+
+                <View style={styles.wrapper}>
+                  <Text style={styles.label}>Location</Text>
+                  <View
+                    style={styles.inputWrapper(
+                      touched.location ? COLORS.primary : COLORS.offwhite
+                    )}
+                  >
+                    <Ionicons
+                      name="location-outline"
+                      size={20}
+                      color={COLORS.primary}
+                      style={styles.iconStyle}
+                    />
+                    <TextInput
+                      placeholder="Enter location"
+                      onFocus={() => setFieldTouched("location")}
+                      onBlur={() => setFieldTouched("location", "")}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      style={{ flex: 1 }}
+                      value={values.location}
+                      onChangeText={handleChange("location")}
+                    />
+                  </View>
+                  {touched.location && errors.location && (
+                    <Text style={styles.errorMessage}>{errors.location}</Text>
+                  )}
+                </View>
+                <View style={styles.wrapper}>
                   <Text style={styles.label}>Password</Text>
                   <View
                     style={styles.inputWrapper(
@@ -183,19 +250,13 @@ const Login = ({ navigation }) => {
                     <Text style={styles.errorMessage}>{errors.password}</Text>
                   )}
                 </View>
+
                 <Button
                   loader={loader}
-                  title={"L O G I N"}
+                  title={"S I G N U P"}
                   onPress={isValid ? handleSubmit : invalidForm}
                   isValid={isValid}
                 />
-
-                <Text
-                  style={styles.register}
-                  onPress={() => navigation.navigate("Register")}
-                >
-                  New Here? Register
-                </Text>
               </View>
             )}
           </Formik>
@@ -205,4 +266,4 @@ const Login = ({ navigation }) => {
   );
 };
 
-export default Login;
+export default Register;

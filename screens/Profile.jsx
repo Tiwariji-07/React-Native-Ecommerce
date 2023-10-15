@@ -9,10 +9,46 @@ import {
   MaterialCommunityIcons,
   SimpleLineIcons,
 } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
+
+  useEffect(() => {
+    checkExistingUser();
+  }, []);
+
+  const checkExistingUser = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      const currentUser = await AsyncStorage.getItem(userId);
+
+      if (currentUser !== null) {
+        const parsedData = JSON.parse(currentUser);
+        setUserData(parsedData);
+        setUserLogin(true);
+      } else {
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      console.log("Error retrieving user");
+    }
+  };
+
+  const userLogout = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      await AsyncStorage.multiRemove([userId, "id"]);
+      navigation.replace("Bottom Navigation");
+    } catch (error) {
+      console.log("Error logging out user");
+    }
+  };
 
   const logout = () => {
     Alert.alert("Logout", "Are you sure you want to log out?", [
@@ -22,7 +58,7 @@ const Profile = ({ navigation }) => {
       },
       {
         text: "Continue",
-        onPress: () => console.log("Continue"),
+        onPress: () => userLogout(),
       },
       // { defaultIndex: 0 },
     ]);
@@ -81,12 +117,12 @@ const Profile = ({ navigation }) => {
             style={styles.profile}
           />
           <Text style={styles.name}>
-            {userLogin ? "Vivek" : "Please login !!"}
+            {userLogin ? userData.username : "Please login !!"}
           </Text>
           {userLogin ? (
             <TouchableOpacity>
               <View style={styles.loginBtn}>
-                <Text style={styles.menuText}>viv@email.com</Text>
+                <Text style={styles.menuText}>{userData.email}</Text>
               </View>
             </TouchableOpacity>
           ) : (

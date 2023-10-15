@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     height: SIZES.height / 2.4,
     width: SIZES.width - 60,
     resizeMode: "contain",
-    marginBottom: SIZES.xxLarge,
+    marginBottom: SIZES.xLarge,
   },
   wrapper: {
     marginBottom: 20,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.small,
   },
   register: {
-    marginTop: 20,
+    marginTop: 15,
     textAlign: "center",
     fontFamily: "medium",
     color: COLORS.primary,

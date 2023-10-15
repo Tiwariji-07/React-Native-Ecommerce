@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import styles from "./ProductTile.style";
 import { useNavigation } from "@react-navigation/native";
