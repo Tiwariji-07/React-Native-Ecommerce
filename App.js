@@ -1,3 +1,4 @@
+import "./ignoreWarnings";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useFonts } from "expo-font";
@@ -13,6 +14,9 @@ import {
   Favorites,
   Cart,
   Register,
+  Success,
+  AllProducts,
+  Address,
 } from "./screens";
 import { StripeProvider } from "@stripe/stripe-react-native";
 
@@ -77,6 +81,21 @@ export default function App() {
             <Stack.Screen
               name="Register"
               component={Register}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Success"
+              component={Success}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Products"
+              component={AllProducts}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Address"
+              component={Address}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

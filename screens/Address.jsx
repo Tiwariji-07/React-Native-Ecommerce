@@ -4,34 +4,34 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
-  Alert,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "./Favorite.style";
-import { COLORS, SIZES } from "../constants";
-import OrderCard from "../components/order/OrderCard";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-const Orders = ({ navigation }) => {
+import { COLORS, SIZES } from "../constants";
+import AddressCard from "../components/address/AddressCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const Address = ({ navigation }) => {
   const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
-  const [order, setOrder] = useState([]);
+  const [address, setAddress] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getOrders = async () => {
+  const getAddresses = async () => {
     setIsLoading(true);
     const id = await AsyncStorage.getItem("id");
 
     try {
-      const endpoint = `${baseUrl}/api/order/${JSON.parse(id)}`;
+      const endpoint = `${baseUrl}/api/address/${JSON.parse(id)}`;
       const response = await axios.get(endpoint);
       if (response.status === 200) {
         if (response.data) {
-          setOrder(response.data);
+          setAddress(response.data);
         } else {
-          setOrder([]);
+          setAddress([]);
         }
       }
     } catch (error) {
@@ -42,7 +42,7 @@ const Orders = ({ navigation }) => {
   };
 
   useEffect(() => {
-    getOrders();
+    getAddresses();
   }, []);
 
   return (
@@ -55,20 +55,19 @@ const Orders = ({ navigation }) => {
         >
           <Ionicons name="chevron-back-circle" size={30} />
         </TouchableOpacity>
-        <Text style={styles.heading}>Orders</Text>
+        <Text style={styles.heading}>Addresses</Text>
       </View>
       <View
         style={{
           justifyContent: "center",
           alignItems: "center",
-          // padding: SIZES.xSmall,
-          width: "100%",
+          padding: SIZES.xSmall,
           //   backgroundColor: COLORS.lightWhite,
         }}
       >
         {isLoading ? (
           <ActivityIndicator size={SIZES.large} color={COLORS.primary} />
-        ) : order.length === 0 ? (
+        ) : address.length === 0 ? (
           <View style={styles.emptyResult}>
             <Image
               source={require("../assets/images/Pose23.png")}
@@ -77,9 +76,9 @@ const Orders = ({ navigation }) => {
           </View>
         ) : (
           <FlatList
-            data={order}
+            data={address}
             keyExtractor={(item) => item._id}
-            renderItem={({ item }) => <OrderCard order={item} />}
+            renderItem={({ item }) => <AddressCard address={item} />}
             contentContainerStyle={{ rowGap: 5 }}
             showsVerticalScrollIndicator={false}
           />
@@ -89,4 +88,4 @@ const Orders = ({ navigation }) => {
   );
 };
 
-export default Orders;
+export default Address;

@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
   favoritesWrapper: {
     justifyContent: "center",
     alignItems: "center",
+    padding: SIZES.xSmall,
   },
   emptyResult: {
     justifyContent: "center",
@@ -31,6 +32,11 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     alignSelf: "center",
   },
+  cartWrapper: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: SIZES.xSmall,
+  },
   cartFooter: {
     position: "absolute",
     bottom: 0,
@@ -38,6 +44,8 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: SIZES.large,
     paddingVertical: SIZES.large,
+    backgroundColor: COLORS.lightWhite,
+    borderRadius: 20,
   },
   footerHeading: {
     fontFamily: "semibold",
@@ -53,6 +61,10 @@ const styles = StyleSheet.create({
   payable: {
     fontFamily: "semibold",
     fontSize: SIZES.medium,
+  },
+  cardSubhead: {
+    fontFamily: "semibold",
+    textAlign: "left",
   },
 });
 

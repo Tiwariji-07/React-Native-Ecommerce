@@ -17,6 +17,8 @@ import styles from "./Favorite.style";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../components";
 import { useStripe } from "@stripe/stripe-react-native";
+import AddressCard from "../components/address/AddressCard";
+import AddressTile from "../components/address/AddressTile";
 
 const Cart = ({ navigation }) => {
   const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
@@ -25,8 +27,34 @@ const Cart = ({ navigation }) => {
   const [total, setTotal] = useState(0);
   const deliveryCahrge = 99;
   const [payable, setPayable] = useState(0);
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState("");
 
+  const setAddress = (id) => {
+    setSelectedAddress(id);
+  };
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
+  const getAddresses = async () => {
+    setIsLoading(true);
+    const id = await AsyncStorage.getItem("id");
+
+    try {
+      const endpoint = `${baseUrl}/api/address/${JSON.parse(id)}`;
+      const response = await axios.get(endpoint);
+      if (response.status === 200) {
+        if (response.data) {
+          setAddresses(response.data);
+        } else {
+          setAddresses([]);
+        }
+      }
+    } catch (error) {
+      Alert.alert("Couldn't get address", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const checkUser = async () => {
     const id = await AsyncStorage.getItem("id");
@@ -49,10 +77,14 @@ const Cart = ({ navigation }) => {
       const endpoint = `${baseUrl}/api/cart/find/${JSON.parse(id)}`;
       const response = await axios.get(endpoint);
       if (response.status === 200) {
-        const products = response.data.products;
-        // console.log(products);
-        setCart(products);
-        getTotal(products);
+        if (response.data) {
+          const products = response.data.products;
+          // console.log(products);
+          setCart(products);
+          getTotal(products);
+        } else {
+          setCart([]);
+        }
       } else {
         Alert.alert("Error Getting cart", "Check the logs", [
           {
@@ -198,6 +230,7 @@ const Cart = ({ navigation }) => {
 
   useEffect(() => {
     checkUser();
+    getAddresses();
   }, []);
 
   const getTotal = (cart) => {
@@ -285,11 +318,44 @@ const Cart = ({ navigation }) => {
     }
   };
 
-  const onCreateOrder = async () => {
-    console.log("Successfully created order");
+  const createOrder = async (transactionId, paymentStatus, product) => {
+    const id = await AsyncStorage.getItem("id");
+    try {
+      const endpoint = `${baseUrl}/api/order/create`;
+      const item = product.cartItem;
+      const subtotal = +item.price.split("$")[1];
+      const total = subtotal * product.quantity;
+      const data = {
+        userId: JSON.parse(id),
+        transactionId: transactionId,
+        productId: `${item._id}`,
+        quantity: product.quantity,
+        subtotal: subtotal,
+        payment_status: paymentStatus,
+        total: total,
+        addressId: selectedAddress,
+      };
+      // console.log(data);
+      const response = await axios.post(endpoint, data);
+      if (response.status === 200) {
+        await clearCart();
+        navigation.navigate("Success");
+
+        console.log("Successfully created order");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const onCreateOrder = async (transactionId, paymentStatus) => {
+    cart.forEach((product) =>
+      createOrder(transactionId, paymentStatus, product)
+    );
   };
 
   const onCheckout = async () => {
+    // console.log(selectedAddress);
     // 1. Create a payment intent
     const paymentIntent = await getPaymentIntent();
     // 2. Initialize the Payment sheet
@@ -308,7 +374,7 @@ const Cart = ({ navigation }) => {
     const status = await getPaymentStatus(paymentIntent.split("_secret_")[0]);
 
     if (status === "succeeded") {
-      onCreateOrder();
+      onCreateOrder(paymentIntent.split("_secret_")[0], status);
     }
   };
 
@@ -324,7 +390,8 @@ const Cart = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.heading}>Cart</Text>
       </View>
-      <View style={styles.favoritesWrapper}>
+
+      <View style={{}}>
         {isLoading ? (
           <ActivityIndicator size={SIZES.large} color={COLORS.primary} />
         ) : cart.length === 0 ? (
@@ -335,22 +402,42 @@ const Cart = ({ navigation }) => {
             />
           </View>
         ) : (
-          <FlatList
-            data={cart}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => (
-              <ItemTile
-                product={item.cartItem}
-                quantity={item.quantity}
-                id={item._id}
-                onDelete={deleteItem}
-                onIncrement={addToCart}
-                onDecrement={decrementItem}
-              />
-            )}
-            contentContainerStyle={{ rowGap: SIZES.small }}
-            showsVerticalScrollIndicator={false}
-          />
+          <View style={styles.cartWrapper}>
+            <Text style={styles.cardSubhead}>Select Address</Text>
+            <FlatList
+              data={addresses}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => (
+                <AddressTile
+                  address={item}
+                  onPress={setAddress}
+                  activeId={selectedAddress}
+                />
+              )}
+              contentContainerStyle={{ rowGap: 5, height: 180 }}
+              horizontal={true}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+            />
+            <Text style={styles.cardSubhead}>{cart.length} Products</Text>
+
+            <FlatList
+              data={cart}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => (
+                <ItemTile
+                  product={item.cartItem}
+                  quantity={item.quantity}
+                  id={item._id}
+                  onDelete={deleteItem}
+                  onIncrement={addToCart}
+                  onDecrement={decrementItem}
+                />
+              )}
+              contentContainerStyle={{ rowGap: SIZES.small }}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
         )}
       </View>
       <View style={styles.cartFooter}>
@@ -361,16 +448,26 @@ const Cart = ({ navigation }) => {
         </View>
         <View style={styles.priceBreakdown}>
           <Text style={styles.desc}>Delivery Charges</Text>
-          <Text style={styles.desc}>{deliveryCahrge.toFixed(2)}</Text>
+          <Text style={styles.desc}>
+            {cart.length === 0 ? (0.0).toFixed(2) : deliveryCahrge.toFixed(2)}
+          </Text>
         </View>
         <View style={styles.priceBreakdown}>
           <Text style={styles.payable}>Amount Payable</Text>
-          <Text style={styles.payable}>{payable}</Text>
+          <Text style={styles.payable}>
+            {cart.length === 0 ? (0.0).toFixed(2) : payable}
+          </Text>
         </View>
         <Button
           title={"C H E C K O U T"}
-          onPress={() => onCheckout()}
-          isValid={true}
+          onPress={
+            cart.length === 0
+              ? () => {}
+              : !selectedAddress
+              ? () => {}
+              : () => onCheckout()
+          }
+          isValid={cart.length === 0 ? false : !selectedAddress ? false : true}
           loader={false}
         />
       </View>

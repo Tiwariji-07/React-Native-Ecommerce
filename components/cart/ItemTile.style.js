@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     height: 120,
     // padding: SIZES.small,
     borderRadius: SIZES.medium,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.lightWhite,
     flexDirection: "row",
     // gap: SIZES.medium,
   },

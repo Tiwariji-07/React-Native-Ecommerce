@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import styles from "./ItemTile.style";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
@@ -63,4 +63,4 @@ const ItemTile = ({
   );
 };
 
-export default ItemTile;
+export default memo(ItemTile);

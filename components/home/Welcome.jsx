@@ -9,14 +9,12 @@ const Welcome = () => {
   const navigation = useNavigation();
   return (
     <View>
-      {/* <View style={styles.container}>
-        <Text style={styles.welcomeTxt(COLORS.black, SIZES.xSmall)}>
-          Find The Most
-        </Text>
-        <Text style={styles.welcomeTxt(COLORS.primary, 0)}>
+      <View style={styles.container}>
+        <Text style={styles.welcomeTxt(COLORS.black, 0)}>Find The Most</Text>
+        <Text style={styles.welcomeTxt(COLORS.primary, -20)}>
           Luxurios Furniture
         </Text>
-      </View> */}
+      </View>
 
       <View style={styles.searchContainer}>
         <TouchableOpacity>

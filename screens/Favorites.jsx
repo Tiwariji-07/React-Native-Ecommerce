@@ -26,7 +26,7 @@ const Favorites = ({ navigation }) => {
       const response = await axios.get(endpoint);
       if (response.status === 200) {
         const products = response.data.products;
-        console.log(products);
+        // console.log(products);
         // setFavorites(products)
         setFavorites(products);
       } else {

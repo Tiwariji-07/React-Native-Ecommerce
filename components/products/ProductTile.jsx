@@ -1,5 +1,5 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { memo } from "react";
 import styles from "./ProductTile.style";
 import { useNavigation } from "@react-navigation/native";
 
@@ -35,4 +35,4 @@ const ProductTile = ({ product }) => {
   );
 };
 
-export default ProductTile;
+export default memo(ProductTile);

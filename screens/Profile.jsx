@@ -186,16 +186,16 @@ const Profile = ({ navigation }) => {
                   <Text style={styles.menuText}>Cart</Text>
                 </View>
               </TouchableOpacity>
-              {/* <TouchableOpacity onPress={clearCache}>
+              <TouchableOpacity onPress={() => navigation.navigate("Address")}>
                 <View style={styles.menuItem(0.2)}>
                   <MaterialCommunityIcons
-                    name="cached"
+                    name="city"
                     size={24}
                     color={COLORS.primary}
                   />
-                  <Text style={styles.menuText}>Clear Cache</Text>
+                  <Text style={styles.menuText}>Address</Text>
                 </View>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
               <TouchableOpacity onPress={deleteAccount}>
                 <View style={styles.menuItem(0.2)}>
                   <AntDesign

@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home, Profile, Search } from "../screens";
+import { Favorites, Home, Profile, Search } from "../screens";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants/index";
 
@@ -61,6 +61,21 @@ const BottomTabNavigation = () => {
             return (
               <Ionicons
                 name={focused ? "person" : "person-outline"}
+                size={24}
+                color={focused ? COLORS.primary : COLORS.gray2}
+              />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Favorite"
+        component={Favorites}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <Ionicons
+                name={focused ? "heart" : "heart-outline"}
                 size={24}
                 color={focused ? COLORS.primary : COLORS.gray2}
               />

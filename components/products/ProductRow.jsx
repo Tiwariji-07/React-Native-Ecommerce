@@ -17,12 +17,14 @@ const ProductRow = () => {
         <Text>Something went wrong!</Text>
       ) : (
         <FlatList
-          data={products}
+          data={products.slice(0, 3)}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => <ProductCard product={item} />}
           horizontal
-          contentContainerStyle={{ columnGap: SIZES.xSmall }}
+          contentContainerStyle={{ columnGap: SIZES.xLarge }}
           showsHorizontalScrollIndicator={false}
+          maxToRenderPerBatch={6}
+          windowSize={3}
         />
       )}
     </View>
