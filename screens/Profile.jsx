@@ -10,8 +10,11 @@ import {
   SimpleLineIcons,
 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const Profile = ({ navigation }) => {
+  const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
+
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
 
@@ -47,6 +50,22 @@ const Profile = ({ navigation }) => {
       navigation.replace("Bottom Navigation");
     } catch (error) {
       console.log("Error logging out user");
+    }
+  };
+
+  const userDelete = async () => {
+    const id = await AsyncStorage.getItem("id");
+    try {
+      const endpoint = `${baseUrl}/api/user/${JSON.parse(id)}`;
+      const response = await axios.delete(endpoint);
+      if (response.status === 200) {
+        console.log(response.data);
+        userLogout();
+      } else {
+        Alert.alert("Error deleting user", `${response.data}`);
+      }
+    } catch (error) {
+      Alert.alert("Error deleting user", `${error}`);
     }
   };
 
@@ -93,7 +112,7 @@ const Profile = ({ navigation }) => {
         },
         {
           text: "Continue",
-          onPress: () => console.log("Continue"),
+          onPress: () => userDelete(),
         },
         // { defaultIndex: 0 },
       ]
@@ -167,7 +186,7 @@ const Profile = ({ navigation }) => {
                   <Text style={styles.menuText}>Cart</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={clearCache}>
+              {/* <TouchableOpacity onPress={clearCache}>
                 <View style={styles.menuItem(0.2)}>
                   <MaterialCommunityIcons
                     name="cached"
@@ -176,7 +195,7 @@ const Profile = ({ navigation }) => {
                   />
                   <Text style={styles.menuText}>Clear Cache</Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity onPress={deleteAccount}>
                 <View style={styles.menuItem(0.2)}>
                   <AntDesign
