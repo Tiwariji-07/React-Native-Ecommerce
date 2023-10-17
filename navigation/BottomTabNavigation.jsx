@@ -68,7 +68,7 @@ const BottomTabNavigation = () => {
           },
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Favorite"
         component={Favorites}
         options={{
@@ -82,7 +82,7 @@ const BottomTabNavigation = () => {
             );
           },
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

@@ -54,6 +54,7 @@ const Home = () => {
 
   useEffect(() => {
     checkExistingUser();
+    getCurrentLocation();
   }, []);
   console.log("home rendered");
 
@@ -131,9 +132,7 @@ const Home = () => {
               <Ionicons name="location-outline" size={24} />
             </TouchableOpacity>
 
-            <Text style={styles.location}>
-              {userData ? userData.location : "India"}
-            </Text>
+            <Text style={styles.location}>{address}</Text>
 
             <View style={{ alignItems: "flex-end" }}>
               {/* <View style={styles.cartCount}>
