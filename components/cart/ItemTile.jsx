@@ -42,7 +42,7 @@ const ItemTile = ({
           {product.supplier}
         </Text>
         <Text style={styles.price} numberOfLines={1}>
-          {+product.price.split("$")[1] * quantity}
+          $ {+product.price.split("$")[1] * quantity}
         </Text>
       </TouchableOpacity>
       <View style={styles.btnWrapper}>

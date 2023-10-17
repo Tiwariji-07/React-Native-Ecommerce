@@ -6,6 +6,7 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,7 +18,6 @@ import styles from "./Favorite.style";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../components";
 import { useStripe } from "@stripe/stripe-react-native";
-import AddressCard from "../components/address/AddressCard";
 import AddressTile from "../components/address/AddressTile";
 
 const Cart = ({ navigation }) => {
@@ -379,7 +379,7 @@ const Cart = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ height: "100%" }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.headingWrapper}>
         <TouchableOpacity
           onPress={() => {
@@ -391,7 +391,7 @@ const Cart = ({ navigation }) => {
         <Text style={styles.heading}>Cart</Text>
       </View>
 
-      <View style={{}}>
+      <ScrollView>
         {isLoading ? (
           <ActivityIndicator size={SIZES.large} color={COLORS.primary} />
         ) : cart.length === 0 ? (
@@ -402,60 +402,64 @@ const Cart = ({ navigation }) => {
             />
           </View>
         ) : (
-          <View style={styles.cartWrapper}>
-            <Text style={styles.cardSubhead}>Select Address</Text>
-            <FlatList
-              data={addresses}
-              keyExtractor={(item) => item._id}
-              renderItem={({ item }) => (
-                <AddressTile
-                  address={item}
-                  onPress={setAddress}
-                  activeId={selectedAddress}
-                />
-              )}
-              contentContainerStyle={{ rowGap: 5, height: 180 }}
-              horizontal={true}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-            />
-            <Text style={styles.cardSubhead}>{cart.length} Products</Text>
+          <ScrollView>
+            <View style={styles.cartWrapper}>
+              <Text style={styles.cardSubhead}>Select Address</Text>
+              <FlatList
+                data={addresses}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item }) => (
+                  <AddressTile
+                    address={item}
+                    onPress={setAddress}
+                    activeId={selectedAddress}
+                  />
+                )}
+                contentContainerStyle={{ rowGap: 5, height: 180 }}
+                horizontal={true}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+              />
+              <Text style={styles.cardSubhead}>{cart.length} Products</Text>
 
-            <FlatList
-              data={cart}
-              keyExtractor={(item) => item._id}
-              renderItem={({ item }) => (
-                <ItemTile
-                  product={item.cartItem}
-                  quantity={item.quantity}
-                  id={item._id}
-                  onDelete={deleteItem}
-                  onIncrement={addToCart}
-                  onDecrement={decrementItem}
-                />
-              )}
-              contentContainerStyle={{ rowGap: SIZES.small }}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
+              <FlatList
+                data={cart}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item }) => (
+                  <ItemTile
+                    product={item.cartItem}
+                    quantity={item.quantity}
+                    id={item._id}
+                    onDelete={deleteItem}
+                    onIncrement={addToCart}
+                    onDecrement={decrementItem}
+                  />
+                )}
+                contentContainerStyle={{ rowGap: SIZES.small }}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+          </ScrollView>
         )}
-      </View>
+      </ScrollView>
       <View style={styles.cartFooter}>
         <Text style={styles.footerHeading}>Order Details</Text>
         <View style={styles.priceBreakdown}>
           <Text style={styles.desc}>Cart Total</Text>
-          <Text style={styles.desc}>{total}</Text>
+          <Text style={styles.desc}>{`$ ${total}`}</Text>
         </View>
         <View style={styles.priceBreakdown}>
           <Text style={styles.desc}>Delivery Charges</Text>
           <Text style={styles.desc}>
-            {cart.length === 0 ? (0.0).toFixed(2) : deliveryCahrge.toFixed(2)}
+            {cart.length === 0
+              ? (0.0).toFixed(2)
+              : `$ ${deliveryCahrge.toFixed(2)}`}
           </Text>
         </View>
         <View style={styles.priceBreakdown}>
           <Text style={styles.payable}>Amount Payable</Text>
           <Text style={styles.payable}>
-            {cart.length === 0 ? (0.0).toFixed(2) : payable}
+            {cart.length === 0 ? (0.0).toFixed(2) : `$ ${payable}`}
           </Text>
         </View>
         <Button

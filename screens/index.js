@@ -10,6 +10,8 @@ import Register from "./Register";
 import Success from "./Success";
 import AllProducts from "./AllProducts";
 import Address from "./Address";
+import OrderDetails from "./OrderDetails";
+import BuyNow from "./BuyNow";
 export {
   Register,
   Home,
@@ -23,4 +25,6 @@ export {
   Success,
   AllProducts,
   Address,
+  OrderDetails,
+  BuyNow,
 };

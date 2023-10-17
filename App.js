@@ -17,6 +17,8 @@ import {
   Success,
   AllProducts,
   Address,
+  OrderDetails,
+  BuyNow,
 } from "./screens";
 import { StripeProvider } from "@stripe/stripe-react-native";
 
@@ -96,6 +98,16 @@ export default function App() {
             <Stack.Screen
               name="Address"
               component={Address}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Order Details"
+              component={OrderDetails}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Buy Now"
+              component={BuyNow}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

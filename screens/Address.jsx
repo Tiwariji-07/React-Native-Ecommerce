@@ -41,6 +41,18 @@ const Address = ({ navigation }) => {
     }
   };
 
+  const onDelete = async (id) => {
+    try {
+      const endpoint = `${baseUrl}/api/address/${id}`;
+      const response = await axios.delete(endpoint);
+      if (response.status === 200) {
+        getAddresses();
+      }
+    } catch (error) {
+      Alert.alert("Error deleting address", error);
+    }
+  };
+
   useEffect(() => {
     getAddresses();
   }, []);
@@ -78,7 +90,9 @@ const Address = ({ navigation }) => {
           <FlatList
             data={address}
             keyExtractor={(item) => item._id}
-            renderItem={({ item }) => <AddressCard address={item} />}
+            renderItem={({ item }) => (
+              <AddressCard address={item} onDelete={onDelete} />
+            )}
             contentContainerStyle={{ rowGap: 5 }}
             showsVerticalScrollIndicator={false}
           />

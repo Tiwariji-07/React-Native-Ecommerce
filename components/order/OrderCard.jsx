@@ -3,12 +3,17 @@ import React, { memo } from "react";
 import styles from "./OrderCard.style";
 import { COLORS, SHADOWS, SIZES } from "../../constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 const OrderCard = ({ order }) => {
   const date = order.createdAt;
   const parsedDate = date.split("T")[0];
+  const navigation = useNavigation();
   //   console.log(parsedDate);
   return (
-    <TouchableOpacity style={[styles.container, SHADOWS.medium]}>
+    <TouchableOpacity
+      style={[styles.container, SHADOWS.medium]}
+      onPress={() => navigation.navigate("Order Details", { order })}
+    >
       <Image
         source={require("../../assets/images/fn1.jpg")}
         style={styles.img}

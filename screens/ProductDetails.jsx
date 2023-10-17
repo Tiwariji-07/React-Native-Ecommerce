@@ -20,9 +20,11 @@ import { COLORS, SIZES } from "../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Toast from "react-native-toast-message";
+import { useStripe } from "@stripe/stripe-react-native";
 
 const ProductDetails = ({ navigation }) => {
   const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const [count, setCount] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -211,8 +213,6 @@ const ProductDetails = ({ navigation }) => {
                 text: "okay",
                 onPress: () => console.log("okay"),
               },
-
-              // { defaultIndex: 0 },
             ]);
           } else {
             Alert.alert("Error Getting favorites", "Check the logs", [
@@ -234,6 +234,8 @@ const ProductDetails = ({ navigation }) => {
             // { defaultIndex: 0 },
           ]);
         }
+      } else {
+        navigation.navigate("Login");
       }
     } catch (error) {
       console.log("Error retrieving user");
@@ -252,6 +254,92 @@ const ProductDetails = ({ navigation }) => {
       text1: "Hello",
       text2: "This is some something 👋",
     });
+  };
+
+  const getPaymentIntent = async () => {
+    try {
+      const endpoint = `${baseUrl}/api/payment`;
+      const price = +product.price.replace("$", "");
+      const data = { amount: Math.floor(price * 100) };
+      // console.log(endpoint + " " + price);
+      const response = await axios.post(endpoint, data);
+      if (response.status === 200) {
+        console.log(response.data);
+        return response.data.paymentIntent;
+      } else {
+        Alert.alert("Something went wrong", response.data);
+      }
+    } catch (error) {
+      Alert.alert("Something went wrong", `${error}`);
+    }
+  };
+
+  const getPaymentStatus = async (id) => {
+    try {
+      const endpoint = `${baseUrl}/api/payment/${id}`;
+      const response = await axios.get(endpoint);
+      if (response.status === 200) {
+        console.log(response.data.paymentIntent.status);
+        return response.data.paymentIntent.status;
+      } else {
+        Alert.alert("Something went wrong", response.data.error);
+      }
+    } catch (error) {
+      Alert.alert("Something went wrong", `${error.message}`);
+    }
+  };
+
+  const createOrder = async (transactionId, paymentStatus, product) => {
+    const id = await AsyncStorage.getItem("id");
+    try {
+      const endpoint = `${baseUrl}/api/order/create`;
+      const item = product;
+      const subtotal = +item.price.split("$")[1];
+      const total = subtotal * 1;
+      const data = {
+        userId: JSON.parse(id),
+        transactionId: transactionId,
+        productId: `${item._id}`,
+        quantity: 1,
+        subtotal: subtotal,
+        payment_status: paymentStatus,
+        total: total,
+        addressId: selectedAddress,
+      };
+      // console.log(data);
+      const response = await axios.post(endpoint, data);
+      if (response.status === 200) {
+        await clearCart();
+        navigation.navigate("Success");
+
+        console.log("Successfully created order");
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const onCreateOrder = async (transactionId, paymentStatus) => {
+    // cart.forEach((product) =>
+    createOrder(transactionId, paymentStatus, product);
+    // );
+  };
+
+  const onBuy = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      const currentUser = await AsyncStorage.getItem(userId);
+
+      if (currentUser !== null) {
+        navigation.navigate("Buy Now", { product });
+      } else {
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      console.log("Error in onBuy");
+    }
   };
 
   return (
@@ -329,7 +417,7 @@ const ProductDetails = ({ navigation }) => {
           </View>
 
           <View style={styles.cartRow}>
-            <TouchableOpacity onPress={() => {}} style={styles.buyBtn}>
+            <TouchableOpacity onPress={() => onBuy()} style={styles.buyBtn}>
               <Text style={styles.cartTitle}>BUY NOW</Text>
             </TouchableOpacity>
             <TouchableOpacity
