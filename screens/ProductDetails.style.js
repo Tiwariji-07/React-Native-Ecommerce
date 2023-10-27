@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   buyBtn: {
     width: SIZES.width * 0.7,
-    backgroundColor: COLORS.black,
+    backgroundColor: COLORS.primary,
     padding: SIZES.small,
     borderRadius: SIZES.large,
     alignItems: "center",
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.large,
     // borderRadius:50%,
     margin: SIZES.small,
-    backgroundColor: COLORS.black,
+    backgroundColor: COLORS.primary,
     alignItems: "center",
     justifyContent: "center",
   },

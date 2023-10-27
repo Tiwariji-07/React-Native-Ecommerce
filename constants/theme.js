@@ -5,8 +5,12 @@ const COLORS = {
   // primary: "#2A4D50",
   // secondary: "#DDF0FF",
   // tertiary: "#FF7754",
-  primary: "#8d8741",
-  secondary: "#fbeec1",
+
+  primary: "#05386b",
+  secondary: "#edf5e1",
+
+  // primary: "#8d8741",
+  // secondary: "#fbeec1",
   tertiary: "#FF7754",
 
   gray: "#83829A",

@@ -31,7 +31,11 @@ const OrderDetails = ({ navigation }) => {
         </View>
         <View style={styles.wrapper1}>
           <Text style={styles.label}>Delivery Address</Text>
-          <AddressTile address={order.addressId} />
+          <AddressTile
+            address={order.addressId}
+            onPress={() => {}}
+            activeId={{}}
+          />
         </View>
         <View style={styles.wrapper1}>
           <Text style={styles.label}>Order Payment Details</Text>
