@@ -19,6 +19,10 @@ import { Button } from "../components";
 import { useStripe } from "@stripe/stripe-react-native";
 import AddressTile from "../components/address/AddressTile";
 import { useRoute } from "@react-navigation/native";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 
 const BuyNow = ({ navigation }) => {
   const route = useRoute();
@@ -183,82 +187,84 @@ const BuyNow = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ height: "100%" }}>
-      <View style={styles.headingWrapper}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Ionicons name="chevron-back-circle" size={30} />
-        </TouchableOpacity>
-        <Text style={styles.heading}>Order Summary</Text>
-      </View>
+    <GestureHandlerRootView>
+      <SafeAreaView style={{ height: "100%" }}>
+        <View style={styles.headingWrapper}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Ionicons name="chevron-back-circle" size={30} />
+          </TouchableOpacity>
+          <Text style={styles.heading}>Order Summary</Text>
+        </View>
 
-      <View style={{}}>
-        {isLoading ? (
-          <ActivityIndicator size={SIZES.large} color={COLORS.primary} />
-        ) : !product ? (
-          <View style={styles.emptyResult}>
-            <Image
-              source={require("../assets/images/Pose23.png")}
-              style={styles.emptyImg}
-            />
-          </View>
-        ) : (
-          <View style={styles.cartWrapper}>
-            <Text style={styles.cardSubhead}>Select Address</Text>
-            <FlatList
-              data={addresses}
-              keyExtractor={(item) => item._id}
-              renderItem={({ item }) => (
-                <AddressTile
-                  address={item}
-                  onPress={setAddress}
-                  activeId={selectedAddress}
-                />
-              )}
-              contentContainerStyle={{ rowGap: 5, height: 180 }}
-              horizontal={true}
-              showsVerticalScrollIndicator={false}
-              showsHorizontalScrollIndicator={false}
-            />
+        <View style={{}}>
+          {isLoading ? (
+            <ActivityIndicator size={SIZES.large} color={COLORS.primary} />
+          ) : !product ? (
+            <View style={styles.emptyResult}>
+              <Image
+                source={require("../assets/images/Pose23.png")}
+                style={styles.emptyImg}
+              />
+            </View>
+          ) : (
+            <View style={styles.cartWrapper}>
+              <Text style={styles.cardSubhead}>Select Address</Text>
+              <FlatList
+                data={addresses}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item }) => (
+                  <AddressTile
+                    address={item}
+                    onPress={setAddress}
+                    activeId={selectedAddress}
+                  />
+                )}
+                contentContainerStyle={{ rowGap: 5, height: 180 }}
+                horizontal={true}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+              />
 
-            <ItemTile
-              product={product}
-              quantity={quantity}
-              id={product._id}
-              onDelete={deleteItem}
-              onIncrement={addToCart}
-              onDecrement={decrementItem}
-            />
+              <ItemTile
+                product={product}
+                quantity={quantity}
+                id={product._id}
+                onDelete={deleteItem}
+                onIncrement={addToCart}
+                onDecrement={decrementItem}
+              />
+            </View>
+          )}
+        </View>
+        <View style={styles.cartFooter}>
+          <Text style={styles.footerHeading}>Order Details</Text>
+          <View style={styles.priceBreakdown}>
+            <Text style={styles.desc}>Cart Total</Text>
+            <Text style={styles.desc}>$ {price * quantity}</Text>
           </View>
-        )}
-      </View>
-      <View style={styles.cartFooter}>
-        <Text style={styles.footerHeading}>Order Details</Text>
-        <View style={styles.priceBreakdown}>
-          <Text style={styles.desc}>Cart Total</Text>
-          <Text style={styles.desc}>$ {price * quantity}</Text>
+          <View style={styles.priceBreakdown}>
+            <Text style={styles.desc}>Delivery Charges</Text>
+            <Text style={styles.desc}>$ {deliveryCahrge.toFixed(2)}</Text>
+          </View>
+          <View style={styles.priceBreakdown}>
+            <Text style={styles.payable}>Amount Payable</Text>
+            <Text style={styles.payable}>
+              $ {price * quantity + deliveryCahrge}
+            </Text>
+          </View>
+          <Button
+            title={"C H E C K O U T"}
+            onPress={!selectedAddress ? () => {} : () => onBuy()}
+            isValid={!selectedAddress ? false : true}
+            loader={false}
+          />
         </View>
-        <View style={styles.priceBreakdown}>
-          <Text style={styles.desc}>Delivery Charges</Text>
-          <Text style={styles.desc}>$ {deliveryCahrge.toFixed(2)}</Text>
-        </View>
-        <View style={styles.priceBreakdown}>
-          <Text style={styles.payable}>Amount Payable</Text>
-          <Text style={styles.payable}>
-            $ {price * quantity + deliveryCahrge}
-          </Text>
-        </View>
-        <Button
-          title={"C H E C K O U T"}
-          onPress={!selectedAddress ? () => {} : () => onBuy()}
-          isValid={!selectedAddress ? false : true}
-          loader={false}
-        />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 

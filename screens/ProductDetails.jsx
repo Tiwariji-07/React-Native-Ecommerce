@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,6 +14,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useStripe } from "@stripe/stripe-react-native";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 
 const ProductDetails = ({ navigation }) => {
   const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
@@ -46,7 +43,7 @@ const ProductDetails = ({ navigation }) => {
       const response = await axios.get(endpoint);
       if (response.status === 200) {
         const products = response.data.products;
-        console.log(products);
+        // console.log(products);
         // setFavorites(products)
         let flag = false;
         products.forEach((item) => {
@@ -121,7 +118,7 @@ const ProductDetails = ({ navigation }) => {
   };
 
   const addToFavorites = async (userId) => {
-    console.log(userId);
+    // console.log(userId);
     try {
       const endpoint = `${baseUrl}/api/favorite/add`;
       const data = {
@@ -132,7 +129,7 @@ const ProductDetails = ({ navigation }) => {
         userId: JSON.parse(userId),
         favoriteItem: `${product._id}`,
       };
-      console.log(data);
+      // console.log(data);
 
       const response = await axios.post(endpoint, data1);
       if (response.status === 200) {
@@ -166,7 +163,7 @@ const ProductDetails = ({ navigation }) => {
       const response = await axios.delete(endpoint);
       if (response.status === 200) {
         setIsFavorite(false);
-        console.log(response.data);
+        // console.log(response.data);
       } else {
         Alert.alert("Error Removing favorites", "Check the logs", [
           {
@@ -247,82 +244,82 @@ const ProductDetails = ({ navigation }) => {
   const decrement = () => {
     if (count > 1) setCount(count - 1);
   };
-  const showToast = () => {
-    Toast.show({
-      type: "success",
-      text1: "Hello",
-      text2: "This is some something 👋",
-    });
-  };
+  // const showToast = () => {
+  //   Toast.show({
+  //     type: "success",
+  //     text1: "Hello",
+  //     text2: "This is some something 👋",
+  //   });
+  // };
 
-  const getPaymentIntent = async () => {
-    try {
-      const endpoint = `${baseUrl}/api/payment`;
-      const price = +product.price.replace("$", "");
-      const data = { amount: Math.floor(price * 100) };
-      // console.log(endpoint + " " + price);
-      const response = await axios.post(endpoint, data);
-      if (response.status === 200) {
-        console.log(response.data);
-        return response.data.paymentIntent;
-      } else {
-        Alert.alert("Something went wrong", response.data);
-      }
-    } catch (error) {
-      Alert.alert("Something went wrong", `${error}`);
-    }
-  };
+  // const getPaymentIntent = async () => {
+  //   try {
+  //     const endpoint = `${baseUrl}/api/payment`;
+  //     const price = +product.price.replace("$", "");
+  //     const data = { amount: Math.floor(price * 100) };
+  //     // console.log(endpoint + " " + price);
+  //     const response = await axios.post(endpoint, data);
+  //     if (response.status === 200) {
+  //       console.log(response.data);
+  //       return response.data.paymentIntent;
+  //     } else {
+  //       Alert.alert("Something went wrong", response.data);
+  //     }
+  //   } catch (error) {
+  //     Alert.alert("Something went wrong", `${error}`);
+  //   }
+  // };
 
-  const getPaymentStatus = async (id) => {
-    try {
-      const endpoint = `${baseUrl}/api/payment/${id}`;
-      const response = await axios.get(endpoint);
-      if (response.status === 200) {
-        console.log(response.data.paymentIntent.status);
-        return response.data.paymentIntent.status;
-      } else {
-        Alert.alert("Something went wrong", response.data.error);
-      }
-    } catch (error) {
-      Alert.alert("Something went wrong", `${error.message}`);
-    }
-  };
+  // const getPaymentStatus = async (id) => {
+  //   try {
+  //     const endpoint = `${baseUrl}/api/payment/${id}`;
+  //     const response = await axios.get(endpoint);
+  //     if (response.status === 200) {
+  //       console.log(response.data.paymentIntent.status);
+  //       return response.data.paymentIntent.status;
+  //     } else {
+  //       Alert.alert("Something went wrong", response.data.error);
+  //     }
+  //   } catch (error) {
+  //     Alert.alert("Something went wrong", `${error.message}`);
+  //   }
+  // };
 
-  const createOrder = async (transactionId, paymentStatus, product) => {
-    const id = await AsyncStorage.getItem("id");
-    try {
-      const endpoint = `${baseUrl}/api/order/create`;
-      const item = product;
-      const subtotal = +item.price.split("$")[1];
-      const total = subtotal * 1;
-      const data = {
-        userId: JSON.parse(id),
-        transactionId: transactionId,
-        productId: `${item._id}`,
-        quantity: 1,
-        subtotal: subtotal,
-        payment_status: paymentStatus,
-        total: total,
-        addressId: selectedAddress,
-      };
-      // console.log(data);
-      const response = await axios.post(endpoint, data);
-      if (response.status === 200) {
-        await clearCart();
-        navigation.navigate("Success");
+  // const createOrder = async (transactionId, paymentStatus, product) => {
+  //   const id = await AsyncStorage.getItem("id");
+  //   try {
+  //     const endpoint = `${baseUrl}/api/order/create`;
+  //     const item = product;
+  //     const subtotal = +item.price.split("$")[1];
+  //     const total = subtotal * 1;
+  //     const data = {
+  //       userId: JSON.parse(id),
+  //       transactionId: transactionId,
+  //       productId: `${item._id}`,
+  //       quantity: 1,
+  //       subtotal: subtotal,
+  //       payment_status: paymentStatus,
+  //       total: total,
+  //       addressId: selectedAddress,
+  //     };
+  //     // console.log(data);
+  //     const response = await axios.post(endpoint, data);
+  //     if (response.status === 200) {
+  //       await clearCart();
+  //       navigation.navigate("Success");
 
-        console.log("Successfully created order");
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  //       console.log("Successfully created order");
+  //     }
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };
 
-  const onCreateOrder = async (transactionId, paymentStatus) => {
-    // cart.forEach((product) =>
-    createOrder(transactionId, paymentStatus, product);
-    // );
-  };
+  // const onCreateOrder = async (transactionId, paymentStatus) => {
+  //   // cart.forEach((product) =>
+  //   createOrder(transactionId, paymentStatus, product);
+  //   // );
+  // };
 
   const onBuy = async () => {
     const id = await AsyncStorage.getItem("id");
@@ -342,47 +339,48 @@ const ProductDetails = ({ navigation }) => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.upperRow}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack();
-            }}
-          >
-            <Ionicons name="chevron-back-circle" size={30} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => checkExistingUser()}>
-            <Ionicons
-              name={isFavorite ? "heart" : "heart-outline"}
-              size={30}
-              color={COLORS.primary}
-            />
-          </TouchableOpacity>
-        </View>
-        <Image
-          source={require("../assets/images/fn5.jpg")}
-          // source=product.imageUrl }}
-          style={styles.image}
-        />
-
-        <View style={styles.details}>
-          <View style={styles.titleRow}>
-            <Text style={styles.title}>{product.title}</Text>
-            <View style={styles.priceWrapper}>
-              <Text style={styles.price}>{product.price}</Text>
-            </View>
+    <GestureHandlerRootView>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.upperRow}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <Ionicons name="chevron-back-circle" size={30} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => checkExistingUser()}>
+              <Ionicons
+                name={isFavorite ? "heart" : "heart-outline"}
+                size={30}
+                color={COLORS.primary}
+              />
+            </TouchableOpacity>
           </View>
+          <Image
+            source={require("../assets/images/fn5.jpg")}
+            // source=product.imageUrl }}
+            style={styles.image}
+          />
 
-          <View style={styles.ratingRow}>
-            <View style={styles.rating}>
-              {[1, 2, 3, 4, 5].map((index) => (
-                <Ionicons key={index} name="star" size={24} color="gold" />
-              ))}
-              <Text style={styles.ratingText}> (4.9)</Text>
+          <View style={styles.details}>
+            <View style={styles.titleRow}>
+              <Text style={styles.title}>{product.title}</Text>
+              <View style={styles.priceWrapper}>
+                <Text style={styles.price}>{product.price}</Text>
+              </View>
             </View>
 
-            {/* <View style={styles.rating}>
+            <View style={styles.ratingRow}>
+              <View style={styles.rating}>
+                {[1, 2, 3, 4, 5].map((index) => (
+                  <Ionicons key={index} name="star" size={24} color="gold" />
+                ))}
+                <Text style={styles.ratingText}> (4.9)</Text>
+              </View>
+
+              {/* <View style={styles.rating}>
               <TouchableOpacity onPress={increment}>
                 <SimpleLineIcons name="plus" size={20} />
               </TouchableOpacity>
@@ -391,48 +389,49 @@ const ProductDetails = ({ navigation }) => {
                 <SimpleLineIcons name="minus" size={20} />
               </TouchableOpacity>
             </View> */}
-          </View>
+            </View>
 
-          <View style={styles.descriptionWrapper}>
-            <Text style={styles.description}>Description</Text>
-            <Text style={styles.descriptionTxt}>{product.description}</Text>
-          </View>
+            <View style={styles.descriptionWrapper}>
+              <Text style={styles.description}>Description</Text>
+              <Text style={styles.descriptionTxt}>{product.description}</Text>
+            </View>
 
-          <View style={{ marginBottom: SIZES.small }}>
-            <View style={styles.location}>
-              <View style={{ flexDirection: "row" }}>
-                <Ionicons name="location-outline" size={20} />
-                <Text>{product.product_location}</Text>
-              </View>
+            <View style={{ marginBottom: SIZES.small }}>
+              <View style={styles.location}>
+                <View style={{ flexDirection: "row" }}>
+                  <Ionicons name="location-outline" size={20} />
+                  <Text>{product.product_location}</Text>
+                </View>
 
-              <View style={{ flexDirection: "row" }}>
-                <MaterialCommunityIcons
-                  name="truck-delivery-outline"
-                  size={20}
-                />
-                <Text> Free Delivery</Text>
+                <View style={{ flexDirection: "row" }}>
+                  <MaterialCommunityIcons
+                    name="truck-delivery-outline"
+                    size={20}
+                  />
+                  <Text> Free Delivery</Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          <View style={styles.cartRow}>
-            <TouchableOpacity onPress={() => onBuy()} style={styles.buyBtn}>
-              <Text style={styles.cartTitle}>BUY NOW</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => addToCart()}
-              style={styles.cartBtn}
-            >
-              <Fontisto
-                name="shopping-bag"
-                size={20}
-                color={COLORS.lightWhite}
-              />
-            </TouchableOpacity>
+            <View style={styles.cartRow}>
+              <TouchableOpacity onPress={() => onBuy()} style={styles.buyBtn}>
+                <Text style={styles.cartTitle}>BUY NOW</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => addToCart()}
+                style={styles.cartBtn}
+              >
+                <Fontisto
+                  name="shopping-bag"
+                  size={20}
+                  color={COLORS.lightWhite}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </GestureHandlerRootView>
   );
 };
 
