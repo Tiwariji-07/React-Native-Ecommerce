@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React, { memo } from "react";
 import styles from "./AddressCard.style";
 import { COLORS, SHADOWS } from "../../constants";
-const AddressCard = ({ address, onDelete }) => {
+const AddressCard = ({ address, onDelete, onEdit }) => {
   const fullAddress =
     address.flat_no +
     "," +
@@ -36,7 +36,7 @@ const AddressCard = ({ address, onDelete }) => {
             Delete
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => onEdit(address)}>
           <Text
             style={{
               fontFamily: "semibold",

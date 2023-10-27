@@ -44,6 +44,26 @@ const styles = StyleSheet.create({
     fontFamily: "medium",
     color: COLORS.primary,
   },
+  modalView: {
+    gap: 20,
+    margin: 5,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  formHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
 });
 
 export default styles;
