@@ -8,6 +8,10 @@ import { ActivityIndicator } from "react-native";
 import { COLORS, SIZES } from "../constants";
 import ProductCard from "../components/products/ProductCard";
 import { Ionicons } from "@expo/vector-icons";
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 
 const AllProducts = ({ navigation }) => {
   const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
@@ -37,42 +41,47 @@ const AllProducts = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView>
-      <View style={styles.headingWrapper}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Ionicons name="chevron-back-circle" size={30} />
-        </TouchableOpacity>
-        <Text style={styles.heading}>All Products</Text>
-      </View>
-      <View style={styles.favoritesWrapper}>
-        {isLoading ? (
-          <ActivityIndicator size={SIZES.large} color={COLORS.primary} />
-        ) : products.length === 0 ? (
-          <View style={styles.emptyResult}>
-            {/* <Text>Empty</Text> */}
-            <Image
-              source={require("../assets/images/Pose23.png")}
-              style={styles.emptyImg}
-            />
-          </View>
-        ) : (
-          <FlatList
-            data={products}
-            numColumns={2}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => <ProductCard product={item} />}
-            contentContainerStyle={{
-              rowGap: SIZES.xSmall,
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView>
+        <View style={styles.headingWrapper}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
             }}
-            showsVerticalScrollIndicator={false}
-          />
-        )}
-      </View>
-    </SafeAreaView>
+          >
+            <Ionicons name="chevron-back-circle" size={30} />
+          </TouchableOpacity>
+          <Text style={styles.heading}>All Products</Text>
+        </View>
+        <View style={styles.favoritesWrapper}>
+          {isLoading ? (
+            <ActivityIndicator size={SIZES.large} color={COLORS.primary} />
+          ) : products.length === 0 ? (
+            <View style={styles.emptyResult}>
+              {/* <Text>Empty</Text> */}
+              <Image
+                source={require("../assets/images/Pose23.png")}
+                style={styles.emptyImg}
+              />
+            </View>
+          ) : (
+            // <ScrollView>
+            <FlatList
+              data={products}
+              numColumns={2}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => <ProductCard product={item} />}
+              contentContainerStyle={{
+                rowGap: SIZES.xSmall,
+                paddingBottom: 140,
+              }}
+              showsVerticalScrollIndicator={false}
+            />
+            // {/* </ScrollView> */}
+          )}
+        </View>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 

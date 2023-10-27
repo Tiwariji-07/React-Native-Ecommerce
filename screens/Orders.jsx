@@ -80,8 +80,10 @@ const Orders = ({ navigation }) => {
             data={order}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => <OrderCard order={item} />}
-            contentContainerStyle={{ rowGap: 5 }}
+            contentContainerStyle={{ rowGap: 5, paddingBottom: 80 }}
             showsVerticalScrollIndicator={false}
+            onRefresh={() => getOrders()}
+            refreshing={isLoading}
           />
         )}
       </View>

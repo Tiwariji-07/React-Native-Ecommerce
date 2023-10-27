@@ -11,17 +11,22 @@ const styles = StyleSheet.create({
   },
   imgContainer: {
     flex: 1,
-    width: 170,
-    marginLeft: SIZES.small / 2,
-    marginTop: SIZES.small / 2,
+    // width: "100%",
+    // marginLeft: SIZES.small / 2,
+    // marginTop: SIZES.small / 2,
     overflow: "hidden",
     justifyContent: "center",
+    borderRadius: 10,
+
     // alignItems: "center",
   },
   image: {
     // aspectRatio: 1,
     resizeMode: "contain",
-    width: 170,
+    width: 182,
+    aspectRatio: 1,
+    borderRadius: 10,
+    // height: 150,
   },
   details: {
     padding: SIZES.small,

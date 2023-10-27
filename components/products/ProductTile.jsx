@@ -5,7 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 
 const ProductTile = ({ product }) => {
   const navigation = useNavigation();
-
+  const imageUrl = product.imageUrl;
+  console.log(typeof imageUrl);
   return (
     <TouchableOpacity
       onPress={() => {
@@ -15,8 +16,11 @@ const ProductTile = ({ product }) => {
       <View style={styles.container}>
         <View style={styles.imgContainer}>
           <Image
-            source={require("../../assets/images/fn2.jpg")}
-            style={styles.img}
+            // source={require("../../assets/images/fn2.jpg")}
+            source={{
+              uri: product.imageUrl,
+            }}
+            style={[styles.img]}
           />
         </View>
         <View style={styles.detailsContainer}>

@@ -11,6 +11,7 @@ const ProductCard = ({ product }) => {
   const navigation = useNavigation();
   console.log("Product card getting rendered");
   const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
+  const imageUrl = product.imageUrl;
   // const [cart, setCart] = useState([]);
   // const [isLoading, setIsLoading] = useState(false);
 
@@ -59,6 +60,8 @@ const ProductCard = ({ product }) => {
             // { defaultIndex: 0 },
           ]);
         }
+      } else {
+        navigation.navigate("login");
       }
     } catch (error) {
       console.log("Error retrieving user");
@@ -73,11 +76,13 @@ const ProductCard = ({ product }) => {
       <View style={styles.container}>
         <View style={styles.imgContainer}>
           <Image
-            source={require("../../assets/images/fn4.jpg")}
-            // source={image}
+            // source={require("../../assets/images/fn4.jpg")}
+            source={{
+              uri: imageUrl,
+            }}
             style={styles.image}
             // width={170}
-            // height={}
+            // height={150}
           />
         </View>
 

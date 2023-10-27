@@ -23,10 +23,6 @@ const Login = ({ navigation }) => {
   const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
   const [loader, setLoader] = useState(false);
   const [responseData, setResponseData] = useState(null);
-  const [input, setInput] = useState({
-    email: "",
-    password: "",
-  });
 
   const [obsecureText, setObsecureText] = useState(true);
 
@@ -56,16 +52,17 @@ const Login = ({ navigation }) => {
     try {
       const endpoint = `${baseUrl}/api/login`;
       const data = values;
+      console.log(data);
       const response = await axios.post(endpoint, data);
       if (response.status === 200) {
         // console.log(respons e.data);
         setLoader(false);
         setResponseData(response.data);
         await AsyncStorage.setItem(
-          `user${responseData._id}`,
-          JSON.stringify(responseData)
+          `user${response.data._id}`,
+          JSON.stringify(response.data)
         );
-        await AsyncStorage.setItem(`id`, JSON.stringify(responseData._id));
+        await AsyncStorage.setItem(`id`, JSON.stringify(response.data._id));
 
         navigation.replace("Bottom Navigation");
       } else {
@@ -79,7 +76,7 @@ const Login = ({ navigation }) => {
         ]);
       }
     } catch (error) {
-      Alert.alert("Error logging in", "Please provide valid credentials", [
+      Alert.alert("Error logging in", "Please provide valid credentials!", [
         {
           text: "okay",
           onPress: () => console.log("okay"),

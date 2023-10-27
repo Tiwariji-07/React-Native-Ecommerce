@@ -5,9 +5,24 @@ const styles = StyleSheet.create({
   headingWrapper: {
     padding: SIZES.xLarge,
     flexDirection: "row",
+    // gap: SIZES.medium,
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: SIZES.xSmall,
+  },
+  headWrapper: {
+    // padding: SIZES.xLarge,
+    flexDirection: "row",
     gap: SIZES.medium,
     alignItems: "center",
   },
+  addBtn: {
+    // padding: SIZES.xLarge,
+    flexDirection: "row",
+    gap: SIZES.xSmall,
+    alignItems: "center",
+  },
+
   heading: {
     color: COLORS.primary,
     fontFamily: "bold",
@@ -36,6 +51,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: SIZES.xSmall,
+    paddingBottom: 250,
   },
   cartFooter: {
     position: "absolute",

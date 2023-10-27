@@ -72,14 +72,13 @@ const ProductDetails = ({ navigation }) => {
         ]);
       }
     } catch (error) {
-      Alert.alert("Error Getting favorites", `${error}`, [
-        {
-          text: "okay",
-          onPress: () => console.log("okay"),
-        },
-
-        // { defaultIndex: 0 },
-      ]);
+      // Alert.alert("Error Getting favorites", `${error}`, [
+      //   {
+      //     text: "okay",
+      //     onPress: () => console.log("okay"),
+      //   },
+      //   // { defaultIndex: 0 },
+      // ]);
     }
   };
 

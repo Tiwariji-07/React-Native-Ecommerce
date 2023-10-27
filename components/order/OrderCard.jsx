@@ -14,10 +14,7 @@ const OrderCard = ({ order }) => {
       style={[styles.container, SHADOWS.medium]}
       onPress={() => navigation.navigate("Order Details", { order })}
     >
-      <Image
-        source={require("../../assets/images/fn1.jpg")}
-        style={styles.img}
-      />
+      <Image source={{ uri: order.productId.imageUrl }} style={styles.img} />
       <View style={styles.details}>
         <Text style={styles.name} numberOfLines={1}>
           {order.productId.title}

@@ -99,6 +99,8 @@ const Favorites = ({ navigation }) => {
             )}
             contentContainerStyle={{ rowGap: SIZES.small }}
             showsVerticalScrollIndicator={false}
+            onRefresh={() => checkIsFavorite()}
+            refreshing={isLoading}
           />
         )}
       </View>

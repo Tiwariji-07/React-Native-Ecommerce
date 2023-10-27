@@ -1,9 +1,10 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, Image } from "react-native";
 import React, { useState, memo } from "react";
 import styles from "./ItemTile.style";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../../constants";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const ItemTile = ({
   product,
@@ -26,10 +27,7 @@ const ItemTile = ({
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
-        <Image
-          source={require("../../assets/images/fn2.jpg")}
-          style={styles.img}
-        />
+        <Image source={{ uri: product.imageUrl }} style={styles.img} />
       </View>
       <TouchableOpacity
         style={styles.detailsWrapper}

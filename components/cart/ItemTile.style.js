@@ -25,7 +25,9 @@ const styles = StyleSheet.create({
   },
   img: {
     resizeMode: "contain",
-    width: "100%",
+    // aspectRatio: 1,
+    height: 120,
+    // width: "100%",
     borderRadius: SIZES.medium,
   },
   detailsWrapper: {

@@ -5,9 +5,8 @@ import {
   ActivityIndicator,
   Image,
   FlatList,
-  TouchableOpacity,
-  ScrollView,
 } from "react-native";
+
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,6 +18,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { Button } from "../components";
 import { useStripe } from "@stripe/stripe-react-native";
 import AddressTile from "../components/address/AddressTile";
+import {
+  ScrollView,
+  GestureHandlerRootView,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 
 const Cart = ({ navigation }) => {
   const baseUrl = process.env.EXPO_PUBLIC_BASE_URL;
@@ -379,30 +383,29 @@ const Cart = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.headingWrapper}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Ionicons name="chevron-back-circle" size={30} />
-        </TouchableOpacity>
-        <Text style={styles.heading}>Cart</Text>
-      </View>
-
-      <ScrollView>
-        {isLoading ? (
-          <ActivityIndicator size={SIZES.large} color={COLORS.primary} />
-        ) : cart.length === 0 ? (
-          <View style={styles.emptyResult}>
-            <Image
-              source={require("../assets/images/Pose23.png")}
-              style={styles.emptyImg}
-            />
-          </View>
-        ) : (
-          <ScrollView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.headingWrapper}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Ionicons name="chevron-back-circle" size={30} />
+          </TouchableOpacity>
+          <Text style={styles.heading}>Cart</Text>
+        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {isLoading ? (
+            <ActivityIndicator size={SIZES.large} color={COLORS.primary} />
+          ) : cart.length === 0 ? (
+            <View style={styles.emptyResult}>
+              <Image
+                source={require("../assets/images/Pose23.png")}
+                style={styles.emptyImg}
+              />
+            </View>
+          ) : (
             <View style={styles.cartWrapper}>
               <Text style={styles.cardSubhead}>Select Address</Text>
               <FlatList
@@ -435,47 +438,50 @@ const Cart = ({ navigation }) => {
                     onDecrement={decrementItem}
                   />
                 )}
-                contentContainerStyle={{ rowGap: SIZES.small }}
+                contentContainerStyle={{ marginVertical: 20 }}
+                ItemSeparatorComponent={<View style={{ height: 30 }} />}
                 showsVerticalScrollIndicator={false}
               />
             </View>
-          </ScrollView>
-        )}
-      </ScrollView>
-      <View style={styles.cartFooter}>
-        <Text style={styles.footerHeading}>Order Details</Text>
-        <View style={styles.priceBreakdown}>
-          <Text style={styles.desc}>Cart Total</Text>
-          <Text style={styles.desc}>{`$ ${total}`}</Text>
+          )}
+        </ScrollView>
+        <View style={styles.cartFooter}>
+          <Text style={styles.footerHeading}>Order Details</Text>
+          <View style={styles.priceBreakdown}>
+            <Text style={styles.desc}>Cart Total</Text>
+            <Text style={styles.desc}>{`$ ${total}`}</Text>
+          </View>
+          <View style={styles.priceBreakdown}>
+            <Text style={styles.desc}>Delivery Charges</Text>
+            <Text style={styles.desc}>
+              {cart.length === 0
+                ? (0.0).toFixed(2)
+                : `$ ${deliveryCahrge.toFixed(2)}`}
+            </Text>
+          </View>
+          <View style={styles.priceBreakdown}>
+            <Text style={styles.payable}>Amount Payable</Text>
+            <Text style={styles.payable}>
+              {cart.length === 0 ? (0.0).toFixed(2) : `$ ${payable}`}
+            </Text>
+          </View>
+          <Button
+            title={"C H E C K O U T"}
+            onPress={
+              cart.length === 0
+                ? () => {}
+                : !selectedAddress
+                ? () => {}
+                : () => onCheckout()
+            }
+            isValid={
+              cart.length === 0 ? false : !selectedAddress ? false : true
+            }
+            loader={false}
+          />
         </View>
-        <View style={styles.priceBreakdown}>
-          <Text style={styles.desc}>Delivery Charges</Text>
-          <Text style={styles.desc}>
-            {cart.length === 0
-              ? (0.0).toFixed(2)
-              : `$ ${deliveryCahrge.toFixed(2)}`}
-          </Text>
-        </View>
-        <View style={styles.priceBreakdown}>
-          <Text style={styles.payable}>Amount Payable</Text>
-          <Text style={styles.payable}>
-            {cart.length === 0 ? (0.0).toFixed(2) : `$ ${payable}`}
-          </Text>
-        </View>
-        <Button
-          title={"C H E C K O U T"}
-          onPress={
-            cart.length === 0
-              ? () => {}
-              : !selectedAddress
-              ? () => {}
-              : () => onCheckout()
-          }
-          isValid={cart.length === 0 ? false : !selectedAddress ? false : true}
-          loader={false}
-        />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 

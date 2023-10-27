@@ -118,16 +118,13 @@ const Profile = ({ navigation }) => {
       ]
     );
   };
-
+  let imgUrl = "../assets/images/space.jpg";
   return (
     <View style={styles.container}>
       <View style={styles.container}>
         {/* <StatusBar backgroundColor={COLORS.gray} /> */}
         <View style={{ width: "100%" }}>
-          <Image
-            source={require("../assets/images/space.jpg")}
-            style={styles.cover}
-          />
+          <Image source={require(imgUrl)} style={styles.cover} />
         </View>
 
         <View style={styles.profileContainer}>

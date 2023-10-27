@@ -60,14 +60,24 @@ const Address = ({ navigation }) => {
   return (
     <SafeAreaView style={{ height: "100%" }}>
       <View style={styles.headingWrapper}>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}
-        >
-          <Ionicons name="chevron-back-circle" size={30} />
-        </TouchableOpacity>
-        <Text style={styles.heading}>Addresses</Text>
+        <View style={styles.headWrapper}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Ionicons name="chevron-back-circle" size={30} />
+          </TouchableOpacity>
+          <Text style={styles.heading}>Addresses</Text>
+        </View>
+        <View>
+          <TouchableOpacity style={styles.addBtn}>
+            <Ionicons name="add-circle" size={SIZES.xLarge} />
+            {/* <Text style={{ color: COLORS.primary, fontSize: SIZES.medium }}>
+              Add
+            </Text> */}
+          </TouchableOpacity>
+        </View>
       </View>
       <View
         style={{

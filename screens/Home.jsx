@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
 import React, { useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./Home.style";
@@ -19,7 +12,11 @@ import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-
+import {
+  ScrollView,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
+import { COLORS } from "../constants";
 const Home = () => {
   const navigation = useNavigation();
   // const screens = [<Welcome />, <Carousel />, <Heading />, <ProductRow />];
@@ -38,6 +35,7 @@ const Home = () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       setErrorMsg("Permission to access location was denied");
+      // setAddress("");
       return;
     }
 
@@ -56,7 +54,7 @@ const Home = () => {
     checkExistingUser();
     getCurrentLocation();
   }, []);
-  console.log("home rendered");
+  // console.log("home rendered");
 
   const checkExistingUser = useCallback(async () => {
     const id = await AsyncStorage.getItem("id");
@@ -119,35 +117,53 @@ const Home = () => {
     }
   };
 
+  const goToCart = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      const currentUser = await AsyncStorage.getItem(userId);
+
+      if (currentUser !== null) {
+        navigation.navigate("Cart");
+      } else {
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      console.log("Error retrieving user");
+    }
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View>
-        <View style={styles.appBarWrapper}>
-          <View style={styles.appBar}>
-            <TouchableOpacity
-              onPress={() => {
-                getCurrentLocation;
-              }}
-            >
-              <Ionicons name="location-outline" size={24} />
-            </TouchableOpacity>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <View>
+          <View style={styles.appBarWrapper}>
+            <View style={styles.appBar}>
+              <TouchableOpacity
+                onPress={() => {
+                  getCurrentLocation();
+                }}
+              >
+                <Ionicons name="location-outline" size={24} />
+              </TouchableOpacity>
 
-            <Text style={styles.location}>{address}</Text>
+              <Text style={styles.location}>{address}</Text>
 
-            <View style={{ alignItems: "flex-end" }}>
-              {/* <View style={styles.cartCount}>
+              <View style={{ alignItems: "flex-end" }}>
+                {/* <View style={styles.cartCount}>
                 <Text style={styles.cartNumber}>{cart.length}</Text>
               </View> */}
 
-              <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
-                <Fontisto name="shopping-bag" size={24} />
-              </TouchableOpacity>
+                <TouchableOpacity onPress={() => goToCart()}>
+                  <Fontisto name="shopping-bag" size={24} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-        {/* <Text>{text}</Text> */}
+          {/* <Text>{text}</Text> */}
 
-        {/* <FlatList
+          {/* <FlatList
           data={screens}
           renderItem={({ item }) => item}
           vertical
@@ -155,14 +171,15 @@ const Home = () => {
             flexGrow: 1,
           }}
         /> */}
-      </View>
-      <ScrollView>
-        <Welcome />
-        <Carousel />
-        <Heading />
-        <ProductRow />
-      </ScrollView>
-    </SafeAreaView>
+        </View>
+        <ScrollView>
+          <Welcome />
+          <Carousel />
+          <Heading />
+          <ProductRow />
+        </ScrollView>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 
